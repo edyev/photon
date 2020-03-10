@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define STEPS       16
+#define STEPS       32
 #define LED_PIN     5
 #define NUM_LEDS    24
 #define BRIGHTNESS  200
@@ -46,7 +46,7 @@ extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
     {0x70, 0x50, 0xff},
     {0x30, 0x10, 0xff}
   };*/
-  //73 0 225 //ffcf96
+  //73 0 225 //ffcf96  //0xf, 0xf0, 0x42 //0xA0, 0xfF, 0xFF -> white
 uint8_t rgb_coeffs[3] = {0xf, 0xf0, 0x42};
 
 /*uint8_t rgb_k[3][3] = {
@@ -71,9 +71,10 @@ struct pixel neopixel[NUM_LEDS] = {0};
 uint16_t _max = 512;
 
 void setup() {
-    
+    randomSeed(analogRead(0));
+   
     Serial.begin(9600);
-    delay( 3000 ); // power-up safety delay
+    delay( 1000 ); // power-up safety delay
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
     FastLED.setBrightness(  BRIGHTNESS );
 
@@ -96,6 +97,7 @@ void loop()
 
 void init_params(struct pixel* pixels, int _size, unsigned int steps){
         //Serial.println("-------------------------------------------------------------");
+        randomSeed(analogRead(0));
     
         for(int i = 0; i < _size; ++i){
                 
@@ -131,15 +133,15 @@ void pixel_get_step(struct pixel* p, unsigned int total_steps){
 void compute_color(struct pixel* pixels, int steps){
     unsigned int mod = 0;  
     for (int i = 1; i <= steps; i++){
-    //Serial.print(i);
-    //Serial.print("->| ");  
+    /*Serial.print(i);
+    Serial.print("->| ");  */
       for(int j = 0; j < NUM_LEDS; ++j){
         mod =!( i % pixels->step) ;
         //Serial.print( pixels->step);
         //Serial.print(";");
         pixels->val += 
           pixels->coeff * mod;
-        /*Serial.print(pixels->coeff * mod);
+       /* Serial.print(pixels->coeff * (int)mod);
         Serial.print(";");
         Serial.print(pixels->val);
         Serial.print("\t\t");*/
@@ -150,7 +152,7 @@ void compute_color(struct pixel* pixels, int steps){
       pixels -= NUM_LEDS;
       map_leds(pixels);
 
-     // Serial.print("|\n");
+      //Serial.print("|\n");
       
     }
     
