@@ -7,7 +7,7 @@
 #define STEPS       32
 #define LED_PIN     5
 #define NUM_LEDS    24
-#define BRIGHTNESS  200
+#define BRIGHTNESS  199
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 
